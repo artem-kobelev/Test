@@ -15,13 +15,13 @@ import java.util.logging.Logger;
  * @author Artem_Kobeliev
  */
 public class CountSum {
-     volatile double[] sequence;
-     int step;
-     int n;
-     int k;
+     private IFunc func;
+     private int step;
+     private int n;
+     private int k;
      
-     CountSum(double[] sequence){
-         this.sequence = sequence;
+     CountSum(IFunc funk){
+         this.func = funk;
      }
      
      public double countWithExecutorService(int n, int k) {
@@ -42,11 +42,11 @@ public class CountSum {
     
      private double withExecutorService(){
         double sum = 0;
-        List<Future<Double>> res = new ArrayList();
+        List<Future<Double>> res = new ArrayList<Future<Double>>();
         ExecutorService es = Executors.newCachedThreadPool();
         for (int i = 0; i < k; i++){
-            res.add(es.submit(new MyThread(sequence, Math.min(step * i, sequence.length), 
-                    Math.min(step * (i + 1), sequence.length))));
+            res.add(es.submit(new MyThread(func, Math.min(-n + step * i, n), 
+                    Math.min(-n + step * (i + 1), n))));
         }
         
         for (int i = 0; i < k; i++){
@@ -58,17 +58,17 @@ public class CountSum {
                 ex.printStackTrace();
             }
         }
-        
+        es.shutdown();
         return sum;
      }
-    
+     
      private double withoutExecutorService(double[] res){
         double sum = 0;
-        List<Thread> threads = new ArrayList();
+        List<Thread> threads = new ArrayList<Thread>();
         
         for (int i = 0; i < k; i++){
-            threads.add(new Thread(new MyRunnableThread(sequence, Math.min(step * i, sequence.length), 
-                    Math.min(step * (i + 1), sequence.length), res)));
+            threads.add(new Thread(new MyRunnableThread(func, Math.min(-n + step * i, n), 
+                    Math.min(-n + step * (i + 1), n), res)));
             threads.get(i).start();
         }
         

@@ -21,7 +21,7 @@ import javax.sound.midi.Sequence;
 
 public class Task1 {
     
-     static double[] sequence;
+     //static double[] sequence;
      static volatile double[] res;
      static double sum = 0;
      static int k;
@@ -35,16 +35,17 @@ public class Task1 {
         Scanner in = new Scanner(System.in);
         System.out.println("Enter n number");
         n = in.nextInt();
-        sequence = new double[2 * n + 1];
+        /*sequence = new double[2 * n + 1];
         for (int i = 0; i < sequence.length; i++){
             sequence[i] = Math.sin(i - n);
-        }
+        }*/
         
         System.out.println("Enter count of threads");
         k = in.nextInt();
         
         res = new double[k];
-        CountSum cs = new CountSum(sequence);
+        IFunc func = new SinFunc();
+        CountSum cs = new CountSum(func);
         
         long begTime = Calendar.getInstance().getTimeInMillis();
         sum = cs.countWithExecutorService(n, k);
@@ -60,7 +61,7 @@ public class Task1 {
         /*
          * with N=2000000 optimal count of threads is 8-12
          */
-        System.exit(0);
+        //System.exit(0);
     }
     
 }

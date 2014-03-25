@@ -12,13 +12,13 @@ import java.util.concurrent.*;
  */
 public class MyThread implements Callable<Double> {
     
-    private double sequence[];
+    private IFunc func;
     int begin;
     int end;
     double sum = 0;
     
-    public MyThread(double sequence[], int begin, int end){
-        this.sequence = sequence;
+    public MyThread(IFunc func, int begin, int end){
+        this.func = func;
         this.begin = begin;
         this.end = end;
     }
@@ -26,7 +26,7 @@ public class MyThread implements Callable<Double> {
     @Override
     public Double call() {
         for(int i = begin; i < end; i++){
-            sum += sequence[i];
+            sum += (Double)func.calculate(i);
         }
         return sum;            
     }
